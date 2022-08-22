@@ -1,5 +1,14 @@
-﻿@{
+﻿@model HomeViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <partial name="_Carousel"/>
+<h2>Os preferidos da semana!</h2>
+<div class="row">
+    @foreach(var lanche in Model.LancesPreferidos)
+    {
+        <partial name="_LancheResumo" for="@lanche"/>
+    }
+</div>

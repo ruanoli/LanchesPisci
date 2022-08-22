@@ -1,5 +1,5 @@
 ﻿using LanchesPisci.Repositories.Interface;
-using LanchesPisci.View_Models;
+using LanchesPisci.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LanchesPisci.Controllers

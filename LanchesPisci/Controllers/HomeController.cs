@@ -1,14 +1,27 @@
 ﻿using LanchesPisci.Models;
+using LanchesPisci.Repositories.Interface;
+using LanchesPisci.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace LanchesPisci.Controllers
 {
     public class HomeController : Controller
-    { 
+    {
+        private readonly ILancheRepository _lancheRepository;
+        public HomeController(ILancheRepository lancheRepository)
+        {
+            _lancheRepository = lancheRepository;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var homeViewModel = new HomeViewModel
+            {
+                LancesPreferidos = _lancheRepository.LanchesPreferidos
+            }; 
+
+            return View(homeViewModel);
         }
 
         public IActionResult Privacy()
