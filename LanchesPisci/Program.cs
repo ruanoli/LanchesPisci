@@ -3,6 +3,7 @@ using LanchesPisci.Models;
 using LanchesPisci.Repositories;
 using LanchesPisci.Repositories.Interface;
 using LanchesPisci.Repository;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,17 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "categoriaFiltro",
+    pattern:"Lanche/{action}/{categoria?}",
+    defaults: new {controller ="Lanche", action ="List"});
+
+app.MapControllerRoute(
+    name:"admin",
+    pattern:"admin/{action=Index}/{id?}",
+    defaults: new { controller = "Admin", Action = "Index" });
+
 
 app.MapControllerRoute(
     name: "default",

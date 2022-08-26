@@ -20,11 +20,15 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         @await Component.InvokeAsync("CarrinhoCompraResumo");
+                        @await Component.InvokeAsync("CategoriaMenu");
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Página Inicial</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Lanche" asp-action="List">Lanches</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Contato" asp-action="Index">Contatos</a>
                         </li>
                     </ul>
                 </div>
