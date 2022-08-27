@@ -13,6 +13,6 @@ namespace LanchesPisci.Models
         [Display(Name = "Categoria")]
         public string? Descricao { get; set; }
 
-        public List<Lanche> Lanches { get; set; }
+        public List<Lanche>? Lanches { get; set; }
     }
 }

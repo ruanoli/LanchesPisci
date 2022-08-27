@@ -26,18 +26,10 @@ namespace LanchesPisci.Controllers
             }
             else
             {
-                if (string.Equals("Normal", categoria, StringComparison.OrdinalIgnoreCase))
-                {
-                   lanches = _lancheRepository.Lanches
-                        .Where(x => x.Categoria.CategoriaNome == "Normal")
-                        .OrderBy(x => x.LancheNome);
-                }
-                else
-                {
-                   lanches = _lancheRepository.Lanches
-                        .Where(x => x.Categoria.CategoriaNome == "Natural")
-                        .OrderBy(x => x.LancheNome);
-                }
+                lanches = _lancheRepository.Lanches
+                              .Where(x => x.Categoria.CategoriaNome.Equals(categoria))
+                              .OrderBy(x => x.LancheNome);
+
                 categoriaAtual = categoria;
             }
 
@@ -47,6 +39,13 @@ namespace LanchesPisci.Controllers
                 CategoriaAtual = categoriaAtual
             };
             return View(lancheListViewModel);
+        }
+
+        public IActionResult Details(int lancheId)
+        {
+            var lanche = _lancheRepository.Lanches.FirstOrDefault(x => x.LancheId == lancheId);
+
+            return View(lanche);
         }
     }
 }
