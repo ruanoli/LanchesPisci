@@ -16,6 +16,8 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 
 builder.Services.AddTransient<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddTransient<ILancheRepository, LancheRepository>();
+builder.Services.AddTransient<IPedidoRepository, PedidoRepository>();
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); //vale por todo tempo de vida da minha aplicação.
 builder.Services.AddScoped(x => CarrinhoCompra.GetCarrinho(x)); //cria uma instancia a cada request
 
