@@ -1,20 +1,24 @@
 ﻿using LanchesPisci.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LanchesPisci.Controllers
+namespace LanchesMac.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManeger;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
-            _userManeger = userManager;
+            _userManager = userManager;
             _signInManager = signInManager;
         }
 
+        [AllowAnonymous]
         public IActionResult Login(string returnUrl)
         {
             return View(new LoginViewModel()
@@ -26,30 +30,54 @@ namespace LanchesPisci.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginVM)
         {
-            //Se o model state n estiver válido, retorno para a page de login com os erros.
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(loginVM);
 
-            //tentando localizar o usuário, para ver se ele já foi registrado na tabela de usuários do Identity.
-            var user = await _userManeger.FindByNameAsync(loginVM.UserName);
+            var user = await _userManager.FindByNameAsync(loginVM.UserName);
 
-            //se o usuário não for nulo eu tento fazer o login.
-            if(user != null)
+            if (user != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
+                var result = await _signInManager.PasswordSignInAsync(user,
+                    loginVM.Password, false, false);
+
                 if (result.Succeeded)
                 {
                     if (string.IsNullOrEmpty(loginVM.ReturnUrl))
                     {
                         return RedirectToAction("Index", "Home");
                     }
-
                     return Redirect(loginVM.ReturnUrl);
                 }
             }
-            ModelState.AddModelError("", "Falha ao tentar realizar o login!");
+            ModelState.AddModelError("", "Falha ao realizar o login!!");
+            return View(loginVM);
+        }
 
-            return View(loginVM.ReturnUrl);
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] //Evita ataque de requisição entre sites (CSRF).
+        public async Task<IActionResult> Register(LoginViewModel registroVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new IdentityUser() { UserName = registroVM.UserName };
+                var result = await _userManager.CreateAsync(user, registroVM.Password);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    this.ModelState.AddModelError("Registro", "Falha ao tentar registrar usuário.");
+                }
+            }
+
+            return View(registroVM);
         }
     }
 }
