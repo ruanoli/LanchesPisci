@@ -1,5 +1,6 @@
 ﻿using LanchesPisci.Models;
 using LanchesPisci.Repositories.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LanchesPisci.Controllers
@@ -16,12 +17,14 @@ namespace LanchesPisci.Controllers
         }
 
         //formulário de conclusão do pedido.
+        [Authorize]
         [HttpGet]
         public IActionResult Checkout()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Checkout(Pedido pedido)
         {

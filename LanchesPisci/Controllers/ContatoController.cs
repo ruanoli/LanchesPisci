@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LanchesPisci.Controllers
 {
@@ -6,7 +7,7 @@ namespace LanchesPisci.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return View();   
         }
     }
 }

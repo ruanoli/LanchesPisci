@@ -1,6 +1,7 @@
 ﻿using LanchesPisci.Models;
 using LanchesPisci.Repositories.Interface;
 using LanchesPisci.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LanchesPisci.Controllers
@@ -27,8 +28,9 @@ namespace LanchesPisci.Controllers
             };
 
             return View(carrinhoCompraVM);
-        } 
+        }
 
+        [Authorize]
         public IActionResult AdicionarItemNoCarrinhoCompra(int lancheId)
         {
             var lancheSelecionado = _lancheRepository.Lanches.FirstOrDefault(x => x.LancheId == lancheId);
@@ -41,6 +43,7 @@ namespace LanchesPisci.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         public IActionResult RemoverItemDoCarrinho(int lancheId)
         {
             var lancheSelecionado = _lancheRepository.Lanches.FirstOrDefault(x => x.LancheId == lancheId);
