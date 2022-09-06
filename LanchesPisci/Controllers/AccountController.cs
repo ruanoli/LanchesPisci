@@ -17,7 +17,7 @@ namespace LanchesMac.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Login(string returnUrl)
+        public IActionResult Login(string? returnUrl)
         {
             return View(new LoginViewModel()
             {
@@ -65,7 +65,7 @@ namespace LanchesMac.Controllers
 
                 if (result.Succeeded)
                 {
-                    //await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _userManager.AddToRoleAsync(user, "Member");
                     return RedirectToAction("Login", "Account");
                 }
                 else

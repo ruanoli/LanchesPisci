@@ -1,8 +1,11 @@
+using LanchesMac.Services;
 using LanchesPisci.Context;
 using LanchesPisci.Models;
 using LanchesPisci.Repositories;
 using LanchesPisci.Repositories.Interface;
 using LanchesPisci.Repository;
+using LanchesPisci.Services;
+using LanchesPisci.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<AppDbContext>(options => 
+builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -22,6 +25,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 builder.Services.AddTransient<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddTransient<ILancheRepository, LancheRepository>();
 builder.Services.AddTransient<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); //vale por todo tempo de vida da minha aplicação.
 builder.Services.AddScoped(x => CarrinhoCompra.GetCarrinho(x)); //cria uma instancia a cada request
@@ -44,19 +48,22 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+CriarPerfisUsuarios(app);
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "categoriaFiltro",
-    pattern:"Lanche/{action}/{categoria?}",
-    defaults: new {controller ="Lanche", action ="List"});
+    name: "areas",
+    pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
-    name:"admin",
-    pattern:"admin/{action=Index}/{id?}",
-    defaults: new { controller = "Admin", Action = "Index" });
+    name: "categoriaFiltro",
+    pattern: "Lanche/{action}/{categoria?}",
+    defaults: new { controller = "Lanche", action = "List" });
+
+ 
 
 
 app.MapControllerRoute(
@@ -66,3 +73,14 @@ app.MapControllerRoute(
 app.UseSession();
 
 app.Run();
+
+void CriarPerfisUsuarios(WebApplication app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
+        service.SeedUsers();
+        service.SeedRoles();
+    }
+}
